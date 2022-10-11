@@ -44,7 +44,36 @@ def close_db(error):
 def index():
     db = get_db()
     dbase = FDataBase(db)
-    return render_template('index.html', menu=dbase.get_menu())
+    return render_template('index.html', menu=dbase.get_menu(), posts=dbase.get_posts_overview())
+
+
+@app.route('/add_post', methods=['POST', 'GET'])
+def add_post():
+    db = get_db()
+    dbase = FDataBase(db)
+
+    if request.method == 'POST':
+        if len(request.form['name']) > 4 and len(request.form['post']) > 10:
+            res = dbase.add_post(request.form['name'], request.form['post'])
+            if not res:
+                flash('Error while adding post', category='error')
+            else:
+                flash('Post has been added successfully', category='success')
+        else:
+            flash('Error while adding post', category='error')
+
+    return render_template('add_post.html', menu=dbase.get_menu())
+
+
+@app.route('/post/<int:id_post>')
+def show_post(id_post):
+    db = get_db()
+    dbase = FDataBase(db)
+    title, post = dbase.get_post(id_post)
+    if not title:
+        abort(404)
+
+    return render_template('post.html', menu=dbase.get_menu(), title=title, post=post)
 
 
 @app.route('/contact', methods=['POST', 'GET'])
