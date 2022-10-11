@@ -6,4 +6,18 @@
 
 {% block content %}
 You're on home page
+{% for post in posts %}
+<article class="post">
+    <header>
+        <div>
+            <h1>{{ post['title'] }}</h1>
+            <div class="about"><a href="{{ url_for('showPost', id_post=post.id) }}">{{ post.title }}</a></div>
+        </div>
+    </header>
+    <p class="body">{{ post['body'] }}</p>
+</article>
+{% if not loop.last %}
+<hr>
+{% endif %}
+{% endfor %}
 {% endblock %}

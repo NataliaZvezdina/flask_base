@@ -1,6 +1,7 @@
 import os
 import sqlite3
 from flask import Flask, render_template, request, flash, session, redirect, url_for, abort, g
+from FDataBase import FDataBase
 
 DATABASE = '/tmp/fl_base.db'
 DEBUG = True
@@ -42,7 +43,8 @@ def close_db(error):
 @app.route('/')
 def index():
     db = get_db()
-    return render_template('index.html', menu=[])
+    dbase = FDataBase(db)
+    return render_template('index.html', menu=dbase.get_menu())
 
 
 @app.route('/contact', methods=['POST', 'GET'])
